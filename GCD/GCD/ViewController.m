@@ -16,6 +16,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //    对于系统版本6.0 以上的版本，GCD 已经 加入ARC管理。因此不需要dispatch_release()主动释放。
+    //    dispatch_release(queue);
+    
 // 1并行队列
 //    [self asyncConCurrent];
     
@@ -57,7 +61,6 @@
 }
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    
     //  10  单例
     [self singleton];
 }
@@ -327,8 +330,7 @@
     });
     
     NSLog(@"end");
-//    对于系统版本6.0 以上的版本，GCD 已经 加入ARC管理。因此不需要dispatch_release()主动释放。
-//    dispatch_release(queue);
+
 }
 
 - (void)didReceiveMemoryWarning {
