@@ -20,49 +20,44 @@
     //    对于系统版本6.0 以上的版本，GCD 已经 加入ARC管理。因此不需要dispatch_release()主动释放。
     //    dispatch_release(queue);
     
-// 1并行队列
-//    [self asyncConCurrent];
+    // 1并行队列
+    [self asyncConCurrent];
     
-// 2   串行队列
-//    [self asyncSerial];
-    
-    
-// 3   栅栏  控制并发队列的执行顺序
-//    [self barrier];
-    
-// 4   延迟执行
-//    [self delay];
+    // 2   串行队列
+    //    [self asyncSerial];
     
     
-// 5   apply 快速迭代
-//    [self apply];
+    // 3   栅栏  控制并发队列的执行顺序
+    //    [self barrier];
     
-// 6  apply 快速迭代  应用
-//    [self moveFile];
-    
-    
-// 7  group 队列组 操作
-//    [self group];
-    
-// 8  主队列 async 串行
-//    [self asyncMain];
-    
-// 9  主队列同步  死锁
-//    [self syncMain];
-    
-//  10  单例
-//    [self singleton];
+    // 4   延迟执行
+    //    [self delay];
     
     
-/**
- 常用函数
- */
+    // 5   apply 快速迭代
+    //    [self apply];
+    
+    // 6  apply 快速迭代  应用
+    //    [self moveFile];
+    
+    
+    // 7  group 队列组 操作
+    //    [self group];
+    
+    // 8  主队列 async 串行
+    //    [self asyncMain];
+    
+    // 9  主队列同步  死锁
+    //    [self syncMain];
+    
+    // 10 单例
+    //    [self singleton];
     
 }
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     //  10  单例
-    [self singleton];
+//    [self singleton];
 }
 
 -(void)singleton
@@ -129,9 +124,6 @@
                 NSLog(@"11111%d-----%@", i,[NSThread currentThread]);
             }
         });
-    
-    
-
     NSLog(@"end");
 }
 
@@ -208,7 +200,6 @@
     
    NSArray *fileArray = [fileManager subpathsAtPath:from];
     
-
     NSLog(@"任务开始");
     
     dispatch_async(dispatch_queue_create("fileManager", DISPATCH_QUEUE_CONCURRENT), ^{
@@ -230,10 +221,7 @@
         });
         NSLog(@"串行队列执行完毕");
     });
-
     NSLog(@"任务完成");
-   
-   
 }
 
 -(void)delay{
@@ -293,6 +281,10 @@
 
 -(void)asyncSerial
 {
+    NSLog(@"begin");
+    //    Serila Disapatch Queue 串行队列主要用在多个线程同事更新相同资源导致数据竞争时。
+    //    第一个参数是进程的标识符 Apple 推荐写法为 使用应用程序ID这种逆序全程域名
+    //    DISPATCH_QUEUE_SERIAL 表示队列类型为 串行队列  等待上个任务执行完成 再往下执行。
     dispatch_queue_t queue = dispatch_queue_create("queueSerial", DISPATCH_QUEUE_SERIAL);
     
     dispatch_async(queue, ^{
@@ -307,36 +299,34 @@
     dispatch_async(queue, ^{
         NSLog(@"4");
     });
-    
     NSLog(@"end");
     
 }
 
 -(void)asyncConCurrent
 {
-//    并行
-    dispatch_queue_t queue =dispatch_queue_create("queue", DISPATCH_QUEUE_CONCURRENT);
-//    串行
-//    dispatch_queue_t queue =dispatch_queue_create("queue", DISPATCH_QUEUE_SERIAL);
+    NSLog(@"begin");
+    //    并行  第一个参数 是线程标识符    第二个参数表示创建的是并行队列 立即执行
+    dispatch_queue_t queue =dispatch_queue_create("concurrentQueue", DISPATCH_QUEUE_CONCURRENT);
     
     dispatch_async(queue, ^{
-        NSLog(@"1");
-    });
-    dispatch_async(queue, ^{
-        NSLog(@"2");
-    });
-    dispatch_async(queue, ^{
-        NSLog(@"3");
-    });
+        for (int i = 0; i < 3; i++) {
+            NSLog(@"111111--- %d----%@", i, [NSThread currentThread]);
+        };
     
+    });
+    dispatch_async(queue, ^{
+        for (int i = 0; i < 3; i++) {
+            NSLog(@"222222--- %d----%@", i, [NSThread currentThread]);
+        };
+    });
+    dispatch_async(queue, ^{
+        for (int i = 0; i < 3; i++) {
+            NSLog(@"333333--- %d----%@", i, [NSThread currentThread]);
+        };
+    });
     NSLog(@"end");
-
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 @end
+                   
