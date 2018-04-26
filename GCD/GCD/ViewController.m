@@ -327,7 +327,8 @@
     });
     
     NSLog(@"end");
-    
+//    对于系统版本6.0 以上的版本，GCD 已经 加入ARC管理。因此不需要dispatch_release()主动释放。
+//    dispatch_release(queue);
 }
 
 - (void)didReceiveMemoryWarning {
